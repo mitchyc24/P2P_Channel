@@ -581,7 +581,7 @@
         let conn = null;
         let encryptionKey = null; // CryptoKey object
         let sendTimeout = null; // For debouncing
-        const APP_PREFIX = "lien_direct_v1_"; // To separate this app from others on PeerJS server
+        const APP_PREFIX = "p2p_channel_v1_"; // Shared prefix for cross-app compatibility
         const DEBOUNCE_MS = 150; // Debounce delay in milliseconds
         const CONNECTION_TIMEOUT_MS = 15000; // 15 second timeout for joining
 
@@ -621,7 +621,7 @@
                 ["deriveKey"]
             );
 
-            const salt = enc.encode("LIEN_DIRECT_STATIC_SALT_V1"); 
+            const salt = enc.encode("SECURE_CHANNEL_STATIC_SALT_V1"); 
 
             return window.crypto.subtle.deriveKey(
                 {
