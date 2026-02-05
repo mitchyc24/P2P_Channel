@@ -1,0 +1,150 @@
+================================================================================
+                            MESH - APPLICATION REQUIREMENTS
+================================================================================
+
+OVERVIEW
+--------
+Mesh is a browser-based, peer-to-peer encrypted group chat application. It 
+enables multiple users to communicate securely in real-time without requiring 
+a central server to store or relay messages. All communication is end-to-end 
+encrypted, ensuring privacy and security.
+
+
+CORE FEATURES
+-------------
+1. Multi-User Channels
+   - Unlimited users can join a single encrypted channel
+   - Users join by entering a shared channel key and nickname
+   - No user registration or accounts required
+
+2. End-to-End Encryption
+   - All messages encrypted using AES-256-GCM before transmission
+   - Encryption key derived from channel key using PBKDF2 (100,000 iterations)
+   - Messages are decrypted only on recipient devices
+
+3. Decentralized Mesh Network
+   - No central server stores messages
+   - Each peer connects directly to all other peers
+   - Messages relayed through the mesh for reliable delivery
+   - Beacon system for peer discovery within channels
+
+4. Real-Time Communication
+   - Instant message delivery with minimal latency
+   - Live user presence indicators
+   - System notifications for join/leave events
+
+5. Zero Installation
+   - Runs entirely in the browser
+   - Single HTML file with no external dependencies to install
+   - No tracking, no data collection
+
+
+TECHNOLOGIES USED
+-----------------
+1. WebRTC (Web Real-Time Communication)
+   - Enables direct peer-to-peer connections between browsers
+   - Handles NAT traversal and firewall penetration
+   - Provides reliable data channels for message transport
+
+2. PeerJS (v1.5.2)
+   - JavaScript library that simplifies WebRTC implementation
+   - Provides signaling server for initial peer discovery
+   - Manages connection lifecycle and error handling
+   - CDN: https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js
+
+3. Web Crypto API
+   - Native browser cryptography API
+   - PBKDF2 for key derivation from channel password
+   - AES-256-GCM for symmetric encryption/decryption
+   - SHA-256 for channel ID generation
+
+4. Bootstrap 5.3
+   - CSS framework for responsive UI design
+   - Grid system and utility classes
+   - CDN: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
+
+5. FontAwesome 6.0
+   - Icon library for UI elements
+   - CDN: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css
+
+6. Google Fonts (JetBrains Mono)
+   - Monospace font for technical aesthetic
+   - CDN: https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700
+
+
+ARCHITECTURE
+------------
+1. Beacon System
+   - Deterministic peer IDs based on channel key hash
+   - First user becomes "beacon_0", subsequent users connect to it
+   - Multiple beacon slots (0-2) for redundancy
+   - Beacons facilitate peer discovery for new joiners
+
+2. Connection Flow
+   a) User enters nickname and channel key
+   b) Channel ID generated via SHA-256 hash of key
+   c) Encryption key derived via PBKDF2 from key
+   d) Attempt to claim beacon slot or connect to existing beacon
+   e) Exchange handshakes with connected peers
+   f) Receive list of other peers and connect to them
+   g) Full mesh network established
+
+3. Message Flow
+   a) User types message and sends
+   b) Message encrypted with AES-256-GCM
+   c) Encrypted message broadcast to all connected peers
+   d) Peers decrypt and display message
+   e) Peers relay message to their connections (mesh relay)
+   f) Duplicate detection prevents message loops
+
+4. Peer Discovery
+   - Periodic beacon connection attempts
+   - Peer list exchange during handshakes
+   - Discovery broadcasts to find new peers
+
+
+SECURITY CONSIDERATIONS
+-----------------------
+1. Encryption
+   - Channel key never transmitted over network
+   - Unique IV (initialization vector) for each message
+   - Key derivation uses high iteration count (100,000)
+
+2. Privacy
+   - No message storage on any server
+   - No user accounts or identifiable information required
+   - Messages exist only in browser memory
+
+3. Limitations
+   - Channel key must be shared securely out-of-band
+   - PeerJS signaling server sees peer IDs (not message content)
+   - WebRTC may expose IP addresses to peers
+
+
+BROWSER REQUIREMENTS
+--------------------
+- Modern browser with WebRTC support
+- Web Crypto API support
+- JavaScript enabled
+- Tested on: Chrome, Firefox, Edge, Safari (iOS/macOS)
+
+
+FILE STRUCTURE
+--------------
+mesh.html          - Complete application (single file)
+mesh_requirements.txt - This requirements document
+
+
+USAGE INSTRUCTIONS
+------------------
+1. Open mesh.html in a web browser
+2. Enter a nickname (displayed to other users)
+3. Enter a channel key (shared secret with your group)
+4. Click "JOIN CHANNEL"
+5. Share the channel key with others who should join
+6. Start chatting securely
+
+Note: All users must enter the exact same channel key to join the same 
+encrypted channel and decrypt each other's messages.
+
+================================================================================

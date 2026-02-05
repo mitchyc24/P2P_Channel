@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MAILLE | Clavardage Décentralisé Chiffré</title>
+    
+    <!-- Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Dark Theme (Default) */
+        :root, [data-theme="dark"] {
+            --bg-color: #0d1117;
+            --sidebar-color: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --msg-bg-self: #1f6feb;
+            --msg-bg-peer: #21262d;
+            --font-main: 'JetBrains Mono', monospace;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-color: #ffffff;
+            --sidebar-color: #f6f8fa;
+            --border-color: #d0d7de;
+            --text-primary: #1f2328;
+            --text-secondary: #656d76;
+            --accent-color: #0969da;
+            --msg-bg-self: #0969da;
+            --msg-bg-peer: #f6f8fa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .login-card {
+            background-color: var(--sidebar-color);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .form-control, .form-control:focus {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.75rem;
+        }
+
+        [data-theme="dark"] .btn-primary {
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            opacity: 0.9;
+        }
+
+        /* Icon Buttons */
+        .btn-icon {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            background-color: var(--border-color);
+        }
+        
+        /* App Layout */
+        #app-container {
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 280px;
+            background-color: var(--sidebar-color);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .channel-info {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .peer-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .peer-item {
+            padding: 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .peer-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #2ea043; }
+
+        /* Mobile Toggle Button */
+        #mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* Chat Area */
+        #chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            min-width: 0;
+        }
+
+        #chat-header {
+            display: none;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--sidebar-color);
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .message-self {
+            align-self: flex-end;
+            background-color: var(--msg-bg-self);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-peer {
+            align-self: flex-start;
+            background-color: var(--msg-bg-peer);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-system {
+            align-self: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .message-meta {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        #input-area {
+            padding: 1rem;
+            background-color: var(--sidebar-color);
+            border-top: 1px solid var(--border-color);
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        #input-area .form-control {
+            border-radius: 20px 0 0 20px;
+        }
+
+        #input-area .btn-primary {
+            border-radius: 0 20px 20px 0;
+            min-width: 50px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 85%;
+                max-width: 320px;
+                z-index: 100;
+                transform: translateX(-100%);
+                box-shadow: 2px 0 15px rgba(0,0,0,0.3);
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            #chat-header {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            #sidebar-overlay {
+                display: none;
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 90;
+            }
+            
+            #sidebar-overlay.active {
+                display: block;
+            }
+
+            #chat-area {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #messages-container {
+                flex: 1;
+                min-height: 0;
+            }
+
+            #input-area {
+                flex-shrink: 0;
+                padding: 0.75rem;
+                padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Desktop: hide overlay always */
+        @media (min-width: 769px) {
+            #sidebar-overlay {
+                display: none !important;
+            }
+        }
+
+        /* About Modal Styles */
+        .modal-content {
+            background-color: var(--sidebar-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-close {
+            filter: var(--bs-btn-close-white-filter);
+        }
+
+        [data-theme="light"] .btn-close {
+            filter: none;
+        }
+
+        .about-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .about-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-section h6 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .about-section p, .about-section ul {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .about-section ul {
+            padding-left: 1.25rem;
+        }
+
+        .about-section li {
+            margin-bottom: 0.25rem;
+        }
+
+        .about-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Modal À propos -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutModalLabel"><i class="fas fa-network-wired me-2"></i>À propos de MAILLE</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="about-icon"><i class="fas fa-shield-halved"></i></div>
+                        <p class="text-secondary">Décentralisé • Chiffré • Privé</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h6><i class="fas fa-info-circle me-2"></i>C'est quoi MAILLE?</h6>
+                        <p>MAILLE est une application de clavardage de groupe chiffrée, pair-à-pair, qui roule directement dans ton navigateur. Ça permet à plusieurs utilisateurs de communiquer en temps réel de façon sécuritaire, sans avoir besoin d'un serveur central pour stocker ou relayer les messages.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h6><i class="fas fa-lock me-2"></i>Sécurité</h6>
+                        <ul>
+                            <li><strong>Chiffrement bout-en-bout:</strong> Tous les messages sont chiffrés avec AES-256-GCM avant d'être transmis</li>
+                            <li><strong>Dérivation de clé:</strong> Les clés de chiffrement sont dérivées de ta clé de canal avec PBKDF2 (100 000 itérations)</li>
+                            <li><strong>Aucun stockage:</strong> Les messages sont jamais stockés sur aucun serveur - y existent juste dans la mémoire du navigateur</li>
+                            <li><strong>Pas de compte:</strong> Pas d'inscription, pas de pistage, pas de collecte de données</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-section">
+                        <h6><i class="fas fa-diagram-project me-2"></i>Comment ça marche</h6>
+                        <ul>
+                            <li><strong>1. Rejoindre:</strong> Entre un surnom pis une clé de canal partagée</li>
+                            <li><strong>2. Connecter:</strong> Ton navigateur se connecte directement aux autres pairs via WebRTC</li>
+                            <li><strong>3. Mailler:</strong> Chaque pair se connecte à tous les autres, formant un réseau maillé résilient</li>
+                            <li><strong>4. Jaser:</strong> Les messages sont chiffrés localement pis diffusés à tous les pairs</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-section">
+                        <h6><i class="fas fa-feather me-2"></i>Simplicité</h6>
+                        <ul>
+                            <li>Un seul fichier HTML - aucune installation requise</li>
+                            <li>Fonctionne dans n'importe quel navigateur moderne</li>
+                            <li>Pas de compte ni d'inscription</li>
+                            <li>Juste partager la clé de canal avec ton groupe</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-section">
+                        <h6><i class="fas fa-triangle-exclamation me-2"></i>Notes importantes</h6>
+                        <ul>
+                            <li>Partage ta clé de canal de façon sécuritaire (en personne, message chiffré, etc.)</li>
+                            <li>Tous les utilisateurs doivent entrer <em>exactement la même</em> clé de canal</li>
+                            <li>Les messages sont disponibles seulement tant que les pairs sont connectés</li>
+                            <li>WebRTC peut exposer ton adresse IP aux autres pairs</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <small class="text-secondary me-auto">Bâti avec WebRTC, PeerJS & Web Crypto API</small>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Compris</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran de connexion -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="m-0"><i class="fas fa-network-wired"></i> MAILLE</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn-icon" id="login-about-btn" title="À propos de MAILLE" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="login-theme-toggle" title="Changer le thème">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-secondary">SURNOM</label>
+                <input type="text" id="input-nickname" class="form-control" autocomplete="off" placeholder="Entre ton surnom...">
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-secondary">CLÉ DE CANAL</label>
+                <input type="password" id="input-key" class="form-control" placeholder="Secret partagé...">
+            </div>
+            <button id="btn-join" class="btn btn-primary w-100">REJOINDRE LE CANAL</button>
+            <div id="login-status" class="mt-3 text-center text-danger small"></div>
+        </div>
+    </div>
+
+    <!-- Application principale -->
+    <div id="app-container" class="d-none">
+        
+        <!-- Overlay mobile -->
+        <div id="sidebar-overlay"></div>
+
+        <!-- Barre latérale -->
+        <div id="sidebar">
+            <div class="channel-info">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h5 class="m-0"><i class="fas fa-hashtag"></i> <span id="display-channel-id">INCONNU</span></h5>
+                        <div class="small text-secondary mt-1" id="my-peer-id-display">Connexion...</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn-icon" id="sidebar-about-btn" title="À propos de MAILLE" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn-icon" id="sidebar-theme-toggle" title="Changer le thème">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="btn-icon d-md-none" id="btn-close-sidebar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="small text-secondary px-3 pt-3">PAIRS CONNECTÉS</div>
+            <div id="peer-list-container" class="peer-list">
+                <!-- Pairs injectés ici -->
+            </div>
+        </div>
+
+        <!-- Zone de clavardage -->
+        <div id="chat-area">
+            <!-- En-tête mobile -->
+            <div id="chat-header">
+                <button id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                <div class="fw-bold flex-grow-1 text-center">CLAVARDAGE MAILLE</div>
+                <button class="btn-icon" id="header-theme-toggle" title="Changer le thème">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+
+            <div id="messages-container">
+                <div class="message message-system">Bienvenue dans la maille. Les messages sont chiffrés bout-en-bout.</div>
+            </div>
+            <div id="input-area">
+                <div class="input-group">
+                    <input type="text" id="message-input" class="form-control" placeholder="Diffuser un message..." autocomplete="off">
+                    <button class="btn btn-primary" id="btn-send"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // GESTION DU THÈME
+        // ==========================================
+        function initTheme() {
+            const saved = localStorage.getItem('maille-theme');
+            const theme = saved || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcons(theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('maille-theme', next);
+            updateThemeIcons(next);
+        }
+
+        function updateThemeIcons(theme) {
+            const icon = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+            document.querySelectorAll('#login-theme-toggle i, #sidebar-theme-toggle i, #header-theme-toggle i').forEach(el => {
+                el.className = `fas ${icon}`;
+            });
+        }
+
+        // Initialiser le thème au chargement
+        initTheme();
+
+        // Écouteurs pour le changement de thème
+        document.getElementById('login-theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('sidebar-theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('header-theme-toggle').addEventListener('click', toggleTheme);
+
+        // ==========================================
+        // ÉTAT & VARIABLES GLOBALES
+        // ==========================================
+        let peer = null;
+        let myNickname = '';
+        let myPeerId = '';
+        let channelHashShort = '';
+        
+        // Objets de clé crypto
+        let aesKey = null; // CryptoKey pour chiffrement/déchiffrement
+        
+        // État du réseau
+        const connections = {}; // remotePeerId -> DataConnection
+        const peersData = {};   // remotePeerId -> { nickname }
+        const processedMsgIds = new Set(); // Déduplication
+        
+        // ==========================================
+        // UTILITAIRES CRYPTO
+        // ==========================================
+        const CRYPTO_SALT_ITERATIONS = 100000;
+
+        async function initSecurity(password) {
+            const enc = new TextEncoder();
+            const passwordKey = await window.crypto.subtle.importKey(
+                "raw", 
+                enc.encode(password), 
+                { name: "PBKDF2" }, 
+                false, 
+                ["deriveBits", "deriveKey"]
+            );
+
+            // 1. Générer le hash du canal (ID public)
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', enc.encode(password));
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const fullHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            channelHashShort = fullHash.substring(0, 16);
+
+            // 2. Dériver la clé de chiffrement (privée)
+            // On utilise le hash du canal comme sel déterministe pour que tous les pairs dérivent la même clé
+            const salt = enc.encode(fullHash); 
+
+            aesKey = await window.crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: CRYPTO_SALT_ITERATIONS,
+                    hash: "SHA-256"
+                },
+                passwordKey,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt", "decrypt"]
+            );
+            
+            return channelHashShort;
+        }
+
+        async function encryptText(text) {
+            const enc = new TextEncoder();
+            const iv = window.crypto.getRandomValues(new Uint8Array(12));
+            const ciphertext = await window.crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: iv },
+                aesKey,
+                enc.encode(text)
+            );
+            
+            // Empaqueter IV + texte chiffré
+            return {
+                iv: Array.from(iv),
+                data: Array.from(new Uint8Array(ciphertext))
+            };
+        }
+
+        async function decryptText(payload) {
+            try {
+                const iv = new Uint8Array(payload.iv);
+                const data = new Uint8Array(payload.data);
+                const decrypted = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv },
+                    aesKey,
+                    data
+                );
+                return new TextDecoder().decode(decrypted);
+            } catch (e) {
+                console.error("Échec du déchiffrement", e);
+                return null;
+            }
+        }
+
+        // ==========================================
+        // LOGIQUE RÉSEAU PEERJS
+        // ==========================================
+        
+        function initializeMesh(channelId) {
+            // ID de balise déterministe pour ce canal
+            const beaconId = `mesh-v1-${channelId}-b0`;
+            
+            // Tenter de revendiquer la balise slot 0
+            console.log("Tentative de devenir balise:", beaconId);
+            const tryPeer = new Peer(beaconId, {
+                debug: 1
+            });
+
+            tryPeer.on('open', (id) => {
+                console.log("Je suis la balise:", id);
+                finalizePeerSetup(tryPeer, true);
+            });
+
+            tryPeer.on('error', (err) => {
+                if (err.type === 'unavailable-id') {
+                    console.log("Balise existante. Connexion en tant que pair régulier.");
+                    // Balise prise, créer un pair aléatoire et se connecter à la balise
+                    const clientPeer = new Peer(null, { debug: 1 });
+                    
+                    clientPeer.on('open', (id) => {
+                        console.log("Connecté en tant que client:", id);
+                        finalizePeerSetup(clientPeer, false, beaconId);
+                    });
+                } else {
+                    document.getElementById('login-status').innerText = "Erreur de connexion: " + err.type;
+                }
+            });
+        }
+
+        function finalizePeerSetup(p, isBeacon, targetBeaconId = null) {
+            peer = p;
+            myPeerId = p.id;
+
+            // Mises à jour de l'interface
+            document.getElementById('login-screen').classList.add('d-none');
+            document.getElementById('app-container').classList.remove('d-none');
+            document.getElementById('display-channel-id').innerText = channelHashShort.toUpperCase();
+            document.getElementById('my-peer-id-display').innerText = myNickname + (isBeacon ? " (BALISE)" : "");
+
+            // Connexion initiale
+            if (targetBeaconId) {
+                connectToPeer(targetBeaconId);
+            }
+
+            // Gestionnaires
+            peer.on('connection', handleConnection);
+            
+            peer.on('error', err => {
+                console.error("Erreur pair:", err);
+                addSystemMessage("Erreur réseau: " + err.type);
+            });
+        }
+
+        function connectToPeer(remoteId) {
+            if (connections[remoteId] || remoteId === myPeerId) return;
+            
+            console.log("Connexion à:", remoteId);
+            const conn = peer.connect(remoteId);
+            handleConnection(conn);
+        }
+
+        function handleConnection(conn) {
+            conn.on('open', () => {
+                // Enregistrer la connexion
+                connections[conn.peer] = conn;
+                console.log("Connecté à:", conn.peer);
+                
+                // 1. Envoyer la poignée de main (surnom)
+                sendPacket(conn, 'shake', { nickname: myNickname });
+                
+                // 2. Commérage: Envoyer la liste des pairs connus pour qu'ils puissent mailler
+                const knownPeers = Object.keys(connections).filter(id => id !== conn.peer);
+                if (knownPeers.length > 0) {
+                    sendPacket(conn, 'peers', { list: knownPeers });
+                }
+            });
+
+            conn.on('data', async (data) => {
+                await handleData(conn.peer, data);
+            });
+
+            conn.on('close', () => {
+                console.log("Connexion fermée:", conn.peer);
+                delete connections[conn.peer];
+                delete peersData[conn.peer];
+                updatePeerListUI();
+            });
+            
+            conn.on('error', (err) => {
+                console.error("Erreur de connexion:", err);
+                // PeerJS ferme automatiquement lors d'erreurs fatales souvent, mais on s'assure du nettoyage
+                if(connections[conn.peer]) conn.close();
+            });
+        }
+
+        function sendPacket(conn, type, payload) {
+            if(conn && conn.open) {
+                conn.send({ type, payload });
+            }
+        }
+
+        function broadcast(type, payload, excludeId = null) {
+            Object.values(connections).forEach(conn => {
+                if (conn.peer !== excludeId) {
+                    sendPacket(conn, type, payload);
+                }
+            });
+        }
+
+        async function handleData(senderId, packet) {
+            const { type, payload } = packet;
+
+            if (type === 'shake') {
+                peersData[senderId] = { nickname: payload.nickname };
+                updatePeerListUI();
+                addSystemMessage(`${payload.nickname} a rejoint la maille.`);
+            }
+            else if (type === 'peers') {
+                // Se connecter aux nouveaux pairs découverts via commérage
+                payload.list.forEach(peerId => {
+                    if (peerId !== myPeerId && !connections[peerId]) {
+                        connectToPeer(peerId);
+                    }
+                });
+            }
+            else if (type === 'chat') {
+                // Dédupliquer
+                if (processedMsgIds.has(payload.id)) return;
+                processedMsgIds.add(payload.id);
+
+                // Déchiffrer
+                const plainText = await decryptText(payload.content);
+                if (plainText !== null) {
+                    addMessageToUI(peersData[senderId]?.nickname || "Inconnu", plainText, false);
+                    
+                    // Relais maillé: Rediffuser aux autres qui n'ont peut-être pas reçu directement
+                    // Cela assure une couverture complète même si pas entièrement maillé
+                    broadcast('chat', payload, senderId); 
+                }
+            }
+        }
+
+        // ==========================================
+        // FONCTIONS D'INTERFACE
+        // ==========================================
+        
+        // Logique de bascule de la barre latérale mobile
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        document.getElementById('btn-close-sidebar').addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        document.getElementById('btn-join').addEventListener('click', async () => {
+            const nick = document.getElementById('input-nickname').value.trim();
+            const key = document.getElementById('input-key').value;
+
+            if (!nick || !key) return alert("Veuillez entrer un surnom et une clé de canal");
+
+            myNickname = nick;
+            document.getElementById('btn-join').disabled = true;
+            document.getElementById('btn-join').innerText = "Génération des clés...";
+
+            // Initialiser la crypto et le réseau
+            const cid = await initSecurity(key);
+            initializeMesh(cid);
+        });
+
+        document.getElementById('btn-send').addEventListener('click', sendMessage);
+        document.getElementById('message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+            
+            // 1. Créer l'ID du message
+            const msgId = Math.random().toString(36).substr(2, 9);
+            processedMsgIds.add(msgId);
+
+            // 2. Chiffrer
+            const encryptedContent = await encryptText(text);
+
+            // 3. Afficher pour soi-même
+            addMessageToUI("Moi", text, true);
+
+            // 4. Diffuser
+            const payload = {
+                id: msgId,
+                timestamp: Date.now(),
+                content: encryptedContent
+            };
+            broadcast('chat', payload);
+        }
+
+        function addMessageToUI(sender, text, isSelf) {
+            const container = document.getElementById('messages-container');
+            const div = document.createElement('div');
+            div.className = `message ${isSelf ? 'message-self' : 'message-peer'}`;
+            
+            const meta = document.createElement('div');
+            meta.className = 'message-meta';
+            meta.innerText = sender;
+            
+            const body = document.createElement('div');
+            body.innerText = text; // Insertion de texte sécurisée
+
+            if (!isSelf) div.appendChild(meta);
+            div.appendChild(body);
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addSystemMessage(text) {
+            const container = document.getElementById('messages-container');
+            const div = document.createElement('div');
+            div.className = 'message message-system';
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updatePeerListUI() {
+            const container = document.getElementById('peer-list-container');
+            container.innerHTML = '';
+            
+            Object.keys(connections).forEach(id => {
+                const info = peersData[id];
+                const div = document.createElement('div');
+                div.className = 'peer-item';
+                div.innerHTML = `<span class="peer-status status-online"></span> ${info ? info.nickname : id.substring(0,8) + '...'}`;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
