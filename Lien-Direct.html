@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P</title>
+    <title>Lien direct</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -366,8 +366,8 @@
     <div class="modal-overlay" id="aboutModal">
         <div class="about-modal">
             <div class="d-flex justify-content-between align-items-center">
-                <h4><i class="fas fa-shield-alt me-2"></i>About P2P</h4>
-                <button class="btn-about" onclick="closeAbout()" title="Close">
+                <h4><i class="fas fa-shield-alt me-2"></i>À propos de Lien direct</h4>
+                <button class="btn-about" onclick="closeAbout()" title="Fermer">
                     <i class="fas fa-times fa-lg"></i>
                 </button>
             </div>
@@ -375,48 +375,48 @@
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-lock"></i></div>
                 <div class="feature-text">
-                    <strong>End-to-End Encryption</strong><br>
-                    <span>All messages are encrypted using AES-256-GCM before leaving your device. Your shared secret key derives the encryption key via PBKDF2 with 100,000 iterations. Not even the signaling server can read your data.</span>
+                    <strong>Chiffrement de bout en bout</strong><br>
+                    <span>Tous les messages sont chiffrés avec AES-256-GCM avant de quitter votre appareil. La phrase secrète partagée sert à dériver la clé de chiffrement via PBKDF2 (100&nbsp;000 itérations). Même le serveur de signalisation ne peut pas lire vos données.</span>
                 </div>
             </div>
 
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
                 <div class="feature-text">
-                    <strong>True Peer-to-Peer</strong><br>
-                    <span>Once connected, data flows directly between browsers using WebRTC. No cloud servers store or relay your messages—just a brief handshake through a signaling server to establish the connection.</span>
+                    <strong>Vrai P2P (pair à pair)</strong><br>
+                    <span>Une fois connecté, les données circulent directement entre les navigateurs via WebRTC. Aucun serveur infonuagique ne stocke ni ne relaie vos messages&nbsp;— il y a seulement un bref échange via un serveur de signalisation pour établir le lien.</span>
                 </div>
             </div>
 
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-bolt"></i></div>
                 <div class="feature-text">
-                    <strong>Real-Time Sync</strong><br>
-                    <span>Text is transmitted as you type with minimal latency. Perfect for secure note sharing, credential exchange, or private conversations.</span>
+                    <strong>Temps réel</strong><br>
+                    <span>Le texte est transmis à mesure que vous tapez, avec une latence minimale.</span>
                 </div>
             </div>
 
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-feather"></i></div>
                 <div class="feature-text">
-                    <strong>Zero Installation</strong><br>
-                    <span>A single HTML file with no dependencies to install. Runs entirely in your browser using native Web Crypto APIs—no accounts, no tracking, no data collection.</span>
+                    <strong>Simple et léger</strong><br>
+                    <span>Un seul fichier HTML, rien à installer. Ça roule entièrement dans votre navigateur avec l’API Web Crypto native&nbsp;— pas de compte, pas de traçage, pas de collecte de données.</span>
                 </div>
             </div>
 
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-key"></i></div>
                 <div class="feature-text">
-                    <strong>Shared Secret Model</strong><br>
-                    <span>Both parties agree on a secret passphrase offline. This passphrase generates both the connection ID and encryption key—no key exchange over the network.</span>
+                    <strong>Phrase secrète partagée</strong><br>
+                    <span>Les deux personnes conviennent d’une phrase secrète à l’avance (hors ligne). Elle sert à générer l’identifiant de connexion et la clé de chiffrement&nbsp;— aucun échange de clé en clair sur le réseau.</span>
                 </div>
             </div>
 
             <hr>
 
             <div style="font-size: 0.8rem; color: var(--text-muted);">
-                <strong style="color: var(--text-main);">How it works:</strong>
-                Both users enter the same secret key → The key derives a unique room ID and AES-256 encryption key → Host waits, Joiner connects → All text is encrypted locally before transmission.
+                <strong style="color: var(--text-main);">Comment ça marche&nbsp;:</strong>
+                Les deux personnes entrent la même phrase secrète → Ça génère un identifiant de session unique et une clé AES-256 → L’hôte attend, l’invité se connecte → Tout est chiffré localement avant l’envoi.
             </div>
 
             <div class="tech-badges">
@@ -433,44 +433,44 @@
     <div id="login-overlay">
         <div class="login-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="mb-0"><i class="fas fa-shield-alt text-success"></i> Peer-2-Peer</h3>
+                <h3 class="mb-0"><i class="fas fa-shield-alt text-success"></i> Lien direct</h3>
                 <div>
-                    <button class="btn-about me-2" onclick="openAbout()" title="About">
+                    <button class="btn-about me-2" onclick="openAbout()" title="À propos">
                         <i class="fas fa-info-circle"></i>
                     </button>
-                    <button class="btn-theme" id="loginThemeToggle" title="Toggle theme">
+                    <button class="btn-theme" id="loginThemeToggle" title="Changer le thème">
                         <i class="fas fa-sun"></i>
                     </button>
                 </div>
             </div>
-            <p class="text-muted text-center small mb-4">Secure, Serverless, Real-Time Key Exchange</p>
-            
+            <p class="text-muted text-center small mb-4">Chiffré de bout en bout, pair à pair, en temps réel</p>
+
             <div class="mb-4">
-                <label class="form-label small text-uppercase text-muted">1. Choose Role</label>
+                <label class="form-label small text-uppercase text-muted">1. Choisir un rôle</label>
                 <div class="btn-group w-100 role-selector" role="group">
                     <input type="radio" class="btn-check" name="role" id="roleHost" value="host" checked>
-                    <label class="btn btn-outline-success" for="roleHost"><i class="fas fa-server"></i> Host</label>
-                    
+                    <label class="btn btn-outline-success" for="roleHost"><i class="fas fa-server"></i> Héberger</label>
+
                     <input type="radio" class="btn-check" name="role" id="roleJoin" value="join">
-                    <label class="btn btn-outline-success" for="roleJoin"><i class="fas fa-satellite-dish"></i> Join</label>
+                    <label class="btn btn-outline-success" for="roleJoin"><i class="fas fa-satellite-dish"></i> Se joindre</label>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label small text-uppercase text-muted">2. Shared Secret Key</label>
+                <label class="form-label small text-uppercase text-muted">2. Phrase secrète partagée</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-light"><i class="fas fa-key"></i></span>
-                    <input type="password" id="secretKey" class="form-control bg-dark border-secondary text-light" placeholder="Enter offline agreed key...">
+                    <input type="password" id="secretKey" class="form-control bg-dark border-secondary text-light" placeholder="Entrez la phrase secrète">
                     <button class="btn btn-outline-secondary" type="button" id="togglePass">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
                 <div class="form-text text-muted" style="font-size: 0.75rem;">
-                    * This key derives the encryption & connection ID.
+                    * Sert à générer la clé de chiffrement et l’identifiant de connexion.
                 </div>
             </div>
 
-            <button id="btnConnect" class="btn-connect" onclick="initApp()">ESTABLISH LINK</button>
+            <button id="btnConnect" class="btn-connect" onclick="initApp()">ÉTABLIR LE LIEN</button>
             <div id="login-msg" class="text-center mt-3 text-danger small"></div>
         </div>
     </div>
@@ -479,15 +479,15 @@
     <div class="app-container" id="appContainer">
         <!-- Header -->
         <div class="status-bar">
-            <div class="brand fw-bold"><i class="fas fa-terminal text-success"></i> P2P</div>
+            <div class="brand fw-bold"><i class="fas fa-terminal text-success"></i> LIEN DIRECT</div>
             
             <div class="connection-status">
-                <span id="statusText">Initializing...</span>
+                <span id="statusText">Initialisation...</span>
                 <div id="statusDot" class="status-dot"></div>
-                <button class="btn-about ms-3" onclick="openAbout()" title="About">
+                <button class="btn-about ms-3" onclick="openAbout()" title="À propos">
                     <i class="fas fa-info-circle"></i>
                 </button>
-                <button class="btn-theme ms-2" id="appThemeToggle" title="Toggle theme">
+                <button class="btn-theme ms-2" id="appThemeToggle" title="Changer le thème">
                     <i class="fas fa-sun"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger ms-2" onclick="location.reload()">
@@ -501,24 +501,24 @@
             <!-- Local Input -->
             <div class="editor-panel">
                 <div class="panel-header">
-                    <span><i class="fas fa-keyboard me-2"></i> Local Buffer</span>
+                    <span><i class="fas fa-keyboard me-2"></i> Texte local</span>
                     <span class="encryption-badge"><i class="fas fa-lock"></i> AES-GCM-256</span>
                 </div>
-                <textarea id="local-text" placeholder="Type here to transmit secure data..." spellcheck="false" aria-label="Local text input"></textarea>
-                <div class="char-counter"><span id="local-char-count">0</span> characters</div>
+                <textarea id="local-text" placeholder="Tapez ici pour envoyer des données de façon sécurisée…" spellcheck="false" aria-label="Zone de texte locale"></textarea>
+                <div class="char-counter"><span id="local-char-count">0</span> caractères</div>
             </div>
 
             <!-- Remote Output -->
             <div class="editor-panel">
                 <div class="panel-header">
-                    <span><i class="fas fa-satellite me-2"></i> Remote Stream</span>
+                    <span><i class="fas fa-satellite me-2"></i> Flux distant</span>
                     <div>
-                        <button class="btn-copy" id="btnCopy" title="Copy to clipboard"><i class="fas fa-copy"></i> Copy</button>
-                        <span class="encryption-badge ms-2" id="remote-status"><i class="fas fa-wifi"></i> Waiting</span>
+                        <button class="btn-copy" id="btnCopy" title="Copier dans le presse-papiers"><i class="fas fa-copy"></i> Copier</button>
+                        <span class="encryption-badge ms-2" id="remote-status"><i class="fas fa-wifi"></i> En attente</span>
                     </div>
                 </div>
-                <textarea id="remote-text" readonly placeholder="Incoming transmission..." spellcheck="false" aria-label="Remote text stream"></textarea>
-                <div class="char-counter"><span id="remote-char-count">0</span> characters received</div>
+                <textarea id="remote-text" readonly placeholder="Messages entrants…" spellcheck="false" aria-label="Flux de texte distant"></textarea>
+                <div class="char-counter"><span id="remote-char-count">0</span> caractères reçus</div>
             </div>
         </div>
     </div>
@@ -549,7 +549,7 @@
 
         // --- THEME MANAGEMENT ---
         function initTheme() {
-            const savedTheme = localStorage.getItem('p2p-theme') || 'dark';
+            const savedTheme = localStorage.getItem('lien-direct-theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcons(savedTheme);
         }
@@ -558,7 +558,7 @@
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('p2p-theme', newTheme);
+            localStorage.setItem('lien-direct-theme', newTheme);
             updateThemeIcons(newTheme);
         }
 
@@ -581,7 +581,7 @@
         let conn = null;
         let encryptionKey = null; // CryptoKey object
         let sendTimeout = null; // For debouncing
-        const APP_PREFIX = "p2p_v1_"; // To separate this app from others on PeerJS server
+        const APP_PREFIX = "lien_direct_v1_"; // To separate this app from others on PeerJS server
         const DEBOUNCE_MS = 150; // Debounce delay in milliseconds
         const CONNECTION_TIMEOUT_MS = 15000; // 15 second timeout for joining
 
@@ -597,14 +597,14 @@
             const btn = document.getElementById('btnCopy');
             try {
                 await navigator.clipboard.writeText(remoteText);
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                btn.innerHTML = '<i class="fas fa-check"></i> Copié';
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copier';
                     btn.classList.remove('copied');
                 }, 2000);
             } catch (err) {
-                console.error('Failed to copy:', err);
+                console.error('Échec de la copie:', err);
             }
         });
 
@@ -621,10 +621,7 @@
                 ["deriveKey"]
             );
 
-            // Using a hardcoded salt ensures both peers derive the exact same key from the same password.
-            // In a more complex app, you might exchange a random salt during handshake, 
-            // but for a simple "shared secret" offline model, a static salt is acceptable/necessary.
-            const salt = enc.encode("SECURE_CHANNEL_STATIC_SALT_V1"); 
+            const salt = enc.encode("LIEN_DIRECT_STATIC_SALT_V1"); 
 
             return window.crypto.subtle.deriveKey(
                 {
@@ -644,7 +641,7 @@
         async function encryptData(text) {
             if (!encryptionKey) return null;
             const enc = new TextEncoder();
-            const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Random IV every time
+            const iv = window.crypto.getRandomValues(new Uint8Array(12));
             const encodedText = enc.encode(text);
 
             const encryptedBuffer = await window.crypto.subtle.encrypt(
@@ -653,8 +650,6 @@
                 encodedText
             );
 
-            // We need to send both the IV and the Encrypted Data
-            // Format: JSON string { iv: [array], data: [array] }
             return JSON.stringify({
                 iv: Array.from(iv),
                 data: Array.from(new Uint8Array(encryptedBuffer))
@@ -678,20 +673,19 @@
                 const dec = new TextDecoder();
                 return dec.decode(decryptedBuffer);
             } catch (e) {
-                console.error("Decryption failed:", e);
-                return "[DECRYPTION ERROR - KEY MISMATCH?]";
+                console.error("Échec du déchiffrement:", e);
+                return "[ERREUR DE DÉCHIFFREMENT - CLÉ INCORRECTE?]";
             }
         }
 
         // 4. Generate a deterministic ID based on the password (SHA-256)
-        // This allows the "Host" to always grab the same ID so the "Joiner" knows where to look.
         async function generateRoomId(password) {
             const enc = new TextEncoder();
-            const data = enc.encode(password + "ROOM_ID_SALT"); // Different salt than encryption
+            const data = enc.encode(password + "ROOM_ID_SALT");
             const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex.substring(0, 16); // Use first 16 chars as ID
+            return hashHex.substring(0, 16);
         }
 
 
@@ -704,56 +698,48 @@
             const msg = document.getElementById('login-msg');
 
             if (secret.length < 4) {
-                msg.innerText = "Secret key is too short.";
+                msg.innerText = "La phrase secrète est trop courte.";
                 return;
             }
 
-            // Disable UI
             btn.disabled = true;
-            btn.innerText = "GENERATING KEYS...";
+            btn.innerText = "GÉNÉRATION DE LA CLÉ...";
 
             try {
-                // 1. Generate Crypto Key
                 encryptionKey = await deriveKey(secret);
-                
-                // 2. Generate Room Hash
+
                 const roomId = await generateRoomId(secret);
                 const hostId = `${APP_PREFIX}${roomId}_HOST`;
 
-                // 3. Initialize PeerJS
-                btn.innerText = "CONTACTING SIGNALING SERVER...";
-                
+                btn.innerText = "CONNEXION AU SERVEUR DE SIGNALISATION...";
+
                 if (role === 'host') {
                     setupHost(hostId);
                 } else {
                     setupJoiner(hostId);
                 }
-
             } catch (err) {
                 console.error(err);
-                msg.innerText = "Error initializing crypto engine.";
+                msg.innerText = "Erreur d'initialisation du moteur crypto.";
                 btn.disabled = false;
             }
         }
 
         function setupHost(myId) {
-            // Initialize Peer with specific ID
             peer = new Peer(myId, {
                 debug: 2
             });
 
             peer.on('open', (id) => {
-                transitionToApp("Waiting for Peer...", "waiting");
-                
-                // Listen for connections
+                transitionToApp("En attente de l’autre personne...", "waiting");
                 peer.on('connection', (c) => {
                     handleConnection(c);
                 });
             });
 
             peer.on('error', (err) => {
-                if(err.type === 'unavailable-id') {
-                    alert("ID taken. Someone is already Hosting with this key. Try Joining instead.");
+                if (err.type === 'unavailable-id') {
+                    alert("Identifiant déjà utilisé. Quelqu’un héberge déjà avec cette phrase secrète. Essayez de vous joindre à la place.");
                     location.reload();
                 } else {
                     handleError(err);
@@ -762,7 +748,6 @@
         }
 
         function setupJoiner(targetId) {
-            // Joiner gets a random ID
             peer = new Peer(null, {
                 debug: 2
             });
@@ -770,15 +755,13 @@
             let connectionTimeout = null;
 
             peer.on('open', (id) => {
-                transitionToApp("Connecting to Host...", "waiting");
-                
-                // Set connection timeout
+                transitionToApp("Connexion à l’hôte...", "waiting");
+
                 connectionTimeout = setTimeout(() => {
-                    updateStatus("Connection Timeout - Host not found", "error");
+                    updateStatus("Délai expiré — hôte introuvable", "error");
                     if (peer) peer.destroy();
                 }, CONNECTION_TIMEOUT_MS);
 
-                // Connect to the Host
                 const c = peer.connect(targetId, { reliable: true });
                 
                 c.on('open', () => {
@@ -787,7 +770,7 @@
                 
                 c.on('error', (err) => {
                     clearTimeout(connectionTimeout);
-                    updateStatus("Failed to connect to Host", "error");
+                    updateStatus("Échec de connexion à l’hôte", "error");
                 });
 
                 handleConnection(c);
@@ -796,7 +779,7 @@
             peer.on('error', (err) => {
                 clearTimeout(connectionTimeout);
                 if (err.type === 'peer-unavailable') {
-                    updateStatus("Host not found - check your key", "error");
+                    updateStatus("Hôte introuvable — vérifiez votre phrase secrète", "error");
                 } else {
                     handleError(err);
                 }
@@ -807,35 +790,34 @@
             conn = connection;
 
             conn.on('open', () => {
-                updateStatus("SECURE CHANNEL ESTABLISHED", "connected");
-                document.getElementById('remote-status').innerHTML = '<i class="fas fa-link"></i> Live';
+                updateStatus("LIEN SÉCURISÉ ÉTABLI", "connected");
+                document.getElementById('remote-status').innerHTML = '<i class="fas fa-link"></i> En ligne';
                 document.getElementById('remote-status').classList.add('text-success');
             });
 
             conn.on('data', async (data) => {
-                // Decrypt incoming data
                 const text = await decryptData(data);
                 document.getElementById('remote-text').value = text;
                 document.getElementById('remote-char-count').textContent = text.length;
             });
 
             conn.on('close', () => {
-                updateStatus("Peer Disconnected", "error");
+                updateStatus("L’autre personne s’est déconnectée", "error");
                 conn = null;
             });
             
             conn.on('error', (err) => {
-                console.error('Connection error:', err);
-                updateStatus("Connection Error", "error");
+                console.error('Erreur de connexion:', err);
+                updateStatus("Erreur de connexion", "error");
             });
         }
 
         function handleError(err) {
             console.error(err);
             const msg = document.getElementById('login-msg');
-            msg.innerText = "Connection Error: " + err.type;
+            msg.innerText = "Erreur de connexion : " + err.type;
             document.getElementById('btnConnect').disabled = false;
-            document.getElementById('btnConnect').innerText = "TRY AGAIN";
+            document.getElementById('btnConnect').innerText = "RÉESSAYER";
         }
 
         // --- TRANSITIONS & UPDATES ---
@@ -859,7 +841,6 @@
 
         const localInput = document.getElementById('local-text');
         
-        // Debounced send function
         function debouncedSend() {
             if (sendTimeout) clearTimeout(sendTimeout);
             
@@ -872,7 +853,6 @@
             }, DEBOUNCE_MS);
         }
 
-        // Use 'input' event instead of 'keyup' to catch paste, cut, etc.
         localInput.addEventListener('input', () => {
             document.getElementById('local-char-count').textContent = localInput.value.length;
             debouncedSend();
